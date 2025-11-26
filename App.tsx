@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
 import ThreeHero from './components/ThreeHero';
-import AIChatWidget from './components/AIChatWidget';
 import anime from 'animejs';
 import { 
   Scan, 
@@ -64,7 +63,6 @@ const Navbar = () => {
           <div className="h-12 sm:h-14 transition-transform duration-300 hover:scale-105">
             <MensorLogo className="h-full w-auto" />
           </div>
-          <div className="hidden sm:block text-[11px] font-mono text-mensor-light/60 tracking-[0.14em]">ENGINEERING SURVEY</div>
         </div>
 
         <div className="hidden md:flex gap-10 text-xs font-mono font-bold text-mensor-light tracking-widest">
@@ -584,8 +582,6 @@ function App() {
         </div>
       </footer>
 
-      {/* AI WIDGET */}
-      <AIChatWidget />
     </div>
   );
 }
