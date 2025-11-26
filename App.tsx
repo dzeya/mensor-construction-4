@@ -1,6 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import ThreeHero from './components/ThreeHero';
+import ArticlePage from './components/ArticlePage';
 import anime from 'animejs';
+import { articles, Article } from './articles';
 import { 
   Scan, 
   Layers, 
@@ -26,6 +28,13 @@ import {
   X
 } from 'lucide-react';
 
+const resolveArticleFromPath = (): Article | null => {
+  if (typeof window === 'undefined') return null;
+  const match = window.location.pathname.match(/\/blog\/([^/]+)\/?$/);
+  if (!match) return null;
+  return articles.find((item) => item.slug === match[1]) || null;
+};
+
 // Mensor Logo - Image
 const MensorLogo = ({ className }: { className?: string }) => (
   <img 
@@ -42,19 +51,26 @@ const TechCorner = ({ className }: { className?: string }) => (
   </svg>
 );
 
-const Navbar = () => {
+const Navbar = ({ onNavigate }: { onNavigate?: (hash?: string) => void }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const navItems = [
-    { label: 'УСЛУГИ', href: '#services' }, 
-    { label: 'РЕШЕНИЯ', href: '#solutions' }, 
-    { label: 'БЛОГ', href: '#blog' }, 
-    { label: 'КОНТАКТЫ', href: '#contact' }
+    { label: 'УСЛУГИ', hash: 'services' }, 
+    { label: 'РЕШЕНИЯ', hash: 'solutions' }, 
+    { label: 'БЛОГ', hash: 'blog' }, 
+    { label: 'КОНТАКТЫ', hash: 'contact' }
   ];
 
   useEffect(() => {
     document.body.classList.toggle('overflow-hidden', isMobileMenuOpen);
     return () => document.body.classList.remove('overflow-hidden');
   }, [isMobileMenuOpen]);
+
+  const handleNavClick = (event: React.MouseEvent<HTMLAnchorElement>, hash?: string) => {
+    if (!onNavigate) return;
+    event.preventDefault();
+    setIsMobileMenuOpen(false);
+    onNavigate(hash);
+  };
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-40 glass-panel border-t-0 border-l-0 border-r-0 border-b border-white/5 transition-all duration-300 safe-area-top">
@@ -67,7 +83,12 @@ const Navbar = () => {
 
         <div className="hidden md:flex gap-10 text-xs font-mono font-bold text-mensor-light tracking-widest">
           {navItems.map((item) => (
-            <a key={item.label} href={item.href} className="hover:text-mensor-accent transition-colors relative group">
+            <a 
+              key={item.label} 
+              href={`/#${item.hash}`} 
+              onClick={(e) => handleNavClick(e, item.hash)}
+              className="hover:text-mensor-accent transition-colors relative group"
+            >
               {item.label}
               <span className="absolute -bottom-2 left-0 w-0 h-[2px] bg-mensor-accent transition-all group-hover:w-full"></span>
             </a>
@@ -94,8 +115,8 @@ const Navbar = () => {
           {navItems.map((item) => (
             <a 
               key={item.label} 
-              href={item.href} 
-              onClick={() => setIsMobileMenuOpen(false)}
+              href={`/#${item.hash}`} 
+              onClick={(e) => handleNavClick(e, item.hash)}
               className="text-mensor-light hover:text-white transition-colors py-2 border-b border-white/5 last:border-b-0"
             >
               {item.label}
@@ -223,8 +244,42 @@ const FAQItem = ({ question, answer }: { question: string, answer: string }) => 
 
 function App() {
   const heroTextRef = useRef(null);
+  const [activeArticle, setActiveArticle] = useState<Article | null>(() => resolveArticleFromPath());
+
+  const scrollToSection = (targetId?: string) => {
+    if (!targetId) {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+    const el = document.getElementById(targetId);
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
+
+  const handleNavigateHome = (hash?: string) => {
+    const path = hash ? `/#${hash}` : '/';
+    window.history.pushState({}, '', path);
+    setActiveArticle(null);
+    setTimeout(() => scrollToSection(hash), 60);
+  };
+
+  const handleOpenArticle = (slug: string) => {
+    const article = articles.find((item) => item.slug === slug);
+    if (!article) return;
+    window.history.pushState({}, '', `/blog/${slug}`);
+    setActiveArticle(article);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   useEffect(() => {
+    const handlePopState = () => setActiveArticle(resolveArticleFromPath());
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
+
+  useEffect(() => {
+    if (activeArticle) return;
     // Hero Text Animation
     anime({
       targets: '.hero-element',
@@ -233,11 +288,28 @@ function App() {
       delay: anime.stagger(200, {start: 1000}),
       easing: 'easeOutExpo'
     });
-  }, []);
+  }, [activeArticle]);
+
+  useEffect(() => {
+    if (activeArticle) return;
+    if (window.location.hash) {
+      const hash = window.location.hash.replace('#', '');
+      setTimeout(() => scrollToSection(hash), 80);
+    }
+  }, [activeArticle]);
+
+  if (activeArticle) {
+    return (
+      <div className="min-h-screen relative overflow-x-hidden selection:bg-mensor-accent selection:text-white bg-mensor-dark">
+        <Navbar onNavigate={handleNavigateHome} />
+        <ArticlePage article={activeArticle} onBack={() => handleNavigateHome('blog')} />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen relative overflow-x-hidden selection:bg-mensor-accent selection:text-white bg-mensor-dark">
-      <Navbar />
+      <Navbar onNavigate={handleNavigateHome} />
 
       {/* BLOCK 1: HERO SECTION */}
       <section className="relative min-h-screen w-full flex items-center justify-center overflow-hidden pt-24 md:pt-32 pb-14">
@@ -477,32 +549,20 @@ function App() {
         <div className="container mx-auto px-4 sm:px-6">
           <SectionTitle title="БАЗА ЗНАНИЙ" subtitle="ПОЛЕЗНОЕ ВМЕСТО СКУЧНОГО" />
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {[
-              {
-                title: "Зачем нужна геодезия?",
-                desc: "Когда без топосъемки не дадут газ, и зачем проверять границы перед покупкой земли."
-              },
-              {
-                title: "Топосъемка: Цены и сроки",
-                desc: "От чего зависит смета и какие документы нужны для старта."
-              },
-              {
-                title: "BIM: Зачем платить за 3D?",
-                desc: "Почему 3D-модель выгоднее 2D-чертежа на этапе стройки."
-              },
-              {
-                title: "Споры с соседями",
-                desc: "Как вынос границ в натуру бережет нервы и деньги. Инструкция владельцу."
-              }
-            ].map((post, i) => (
-              <div key={i} className="group cursor-pointer bg-white/5 border border-white/5 p-6 hover:border-mensor-accent/50 transition-all flex flex-col h-full">
-                <div className="text-mensor-accent text-xs font-mono mb-4 tracking-widest">СТАТЬЯ 0{i+1}</div>
+            {articles.map((post) => (
+              <a 
+                key={post.slug} 
+                href={`/blog/${post.slug}`} 
+                onClick={(e) => { e.preventDefault(); handleOpenArticle(post.slug); }} 
+                className="group cursor-pointer bg-white/5 border border-white/5 p-6 hover:border-mensor-accent/50 transition-all flex flex-col h-full"
+              >
+                <div className="text-mensor-accent text-xs font-mono mb-4 tracking-widest">СТАТЬЯ {post.order}</div>
                 <h3 className="text-lg font-bold text-white mb-3 group-hover:text-mensor-accent transition-colors">{post.title}</h3>
-                <p className="text-sm text-mensor-light/60 mb-6 flex-1">{post.desc}</p>
+                <p className="text-sm text-mensor-light/60 mb-6 flex-1">{post.summary}</p>
                 <div className="flex items-center gap-2 text-xs font-bold text-white uppercase tracking-wider group-hover:gap-4 transition-all mt-auto">
                   Читать <ArrowRight size={12} className="text-mensor-accent" />
                 </div>
-              </div>
+              </a>
             ))}
           </div>
         </div>

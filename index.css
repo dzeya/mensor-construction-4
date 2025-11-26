@@ -45,3 +45,205 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: #E33E2B;
 }
+
+.article-lead {
+  position: relative;
+  font-size: clamp(17px, 1.8vw, 20px);
+  line-height: 1.65;
+  color: rgba(229, 229, 229, 0.9);
+  padding-left: 18px;
+  border-left: 2px solid rgba(227, 62, 43, 0.25);
+}
+
+.article-lead::first-letter {
+  font-size: 2em;
+  line-height: 1.1;
+  color: #E33E2B;
+  padding-right: 4px;
+  font-weight: 700;
+}
+
+.article-body {
+  position: relative;
+}
+
+.article-body::before {
+  content: '';
+  position: absolute;
+  inset: -16px -18px;
+  background: radial-gradient(circle at 20% 20%, rgba(227,62,43,0.035), transparent 32%),
+              radial-gradient(circle at 80% 0%, rgba(255,255,255,0.025), transparent 35%),
+              linear-gradient(180deg, rgba(255,255,255,0.018), transparent 50%);
+  pointer-events: none;
+  z-index: 0;
+  border: 1px solid rgba(255,255,255,0.03);
+}
+
+.article-body > * {
+  position: relative;
+  z-index: 1;
+}
+
+.article-body h2, .article-body h3 {
+  letter-spacing: -0.01em;
+}
+
+.article-body h2::after, .article-body h3::after {
+  content: '';
+  display: block;
+  width: 42px;
+  height: 2px;
+  background: linear-gradient(90deg, #E33E2B, transparent);
+  margin-top: 8px;
+}
+
+.article-body p {
+  color: rgba(229, 229, 229, 0.85);
+}
+
+.article-body .reading-column {
+  max-width: 74ch;
+  margin: 0 auto;
+}
+
+.article-body ol li, .article-body ul li {
+  color: rgba(229, 229, 229, 0.82);
+}
+
+.article-body blockquote {
+  margin: 24px 0;
+  padding: 18px 20px;
+  border-left: 3px solid #E33E2B;
+  background: rgba(255,255,255,0.03);
+  color: rgba(229,229,229,0.9);
+  font-style: italic;
+}
+
+.article-body p + p {
+  margin-top: -6px;
+}
+
+.article-body ol {
+  counter-reset: item;
+  list-style: none;
+  padding-left: 0;
+  margin-left: 0;
+}
+
+.article-body ol li {
+  counter-increment: item;
+  position: relative;
+  padding-left: 44px;
+  margin-bottom: 14px;
+}
+
+.article-body ol li::before {
+  content: counter(item, decimal-leading-zero);
+  position: absolute;
+  left: 0;
+  top: 2px;
+  font-family: 'Fira Code', monospace;
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  color: #E33E2B;
+  background: rgba(227,62,43,0.08);
+  border: 1px solid rgba(227,62,43,0.25);
+  padding: 6px 7px;
+  line-height: 1;
+}
+
+.article-body ul {
+  list-style: none;
+  padding-left: 0;
+}
+
+.article-body ul li {
+  position: relative;
+  padding-left: 18px;
+  margin-bottom: 12px;
+}
+
+.article-body ul li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 10px;
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: #E33E2B;
+  box-shadow: 0 0 0 4px rgba(227,62,43,0.08);
+}
+
+.lead-card {
+  background: linear-gradient(120deg, rgba(227,62,43,0.04), rgba(255,255,255,0.02));
+  border: 1px solid rgba(255,255,255,0.04);
+  padding: 16px 18px;
+  margin-top: 8px;
+}
+
+.lead-label {
+  font-family: 'Fira Code', monospace;
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  color: rgba(227,62,43,0.75);
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  border: 1px solid rgba(255,255,255,0.08);
+  background: rgba(255,255,255,0.04);
+  border-radius: 4px;
+  color: rgba(229,229,229,0.9);
+  font-size: 13px;
+}
+
+.side-card {
+  background: rgba(15, 15, 15, 0.85);
+  border: 1px solid rgba(255,255,255,0.06);
+  padding: 18px 18px 20px;
+  box-shadow: 0 25px 50px -24px rgba(0,0,0,0.8);
+}
+
+.article-hero {
+  display: grid;
+  gap: 24px;
+}
+
+.article-hero h1 {
+  letter-spacing: -0.01em;
+}
+
+.article-figure {
+  margin: 20px 0 26px;
+  display: grid;
+  gap: 10px;
+}
+
+.article-figure__frame {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,0.06);
+  background: radial-gradient(circle at 12% 12%, rgba(227,62,43,0.05), transparent 42%);
+  min-height: 220px;
+  box-shadow: 0 22px 40px -24px rgba(0,0,0,0.82);
+}
+
+.article-figure__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  filter: saturate(1.05);
+}
+
+.article-figure__caption {
+  font-size: 13px;
+  color: rgba(229,229,229,0.72);
+  line-height: 1.5;
+}
