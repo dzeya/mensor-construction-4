@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { MessageSquare, X, Send, Bot, Loader2 } from 'lucide-react';
 import anime from 'animejs';
-import { streamResponse } from '../services/gemini';
+import { sendMessage } from '../services/gemini';
 import ReactMarkdown from 'react-markdown';
 
 interface Message {
@@ -39,33 +39,18 @@ const AIChatWidget = () => {
     if (!input.trim() || isLoading) return;
 
     const userMsg = input;
+    const history = messages.map(m => ({
+      role: m.role,
+      parts: [{ text: m.text }],
+    }));
+
     setInput('');
     setMessages(prev => [...prev, { role: 'user', text: userMsg }]);
     setIsLoading(true);
 
     try {
-      // Format history for API
-      const history = messages.map(m => ({
-        role: m.role,
-        parts: [{ text: m.text }]
-      }));
-
-      const stream = await streamResponse(userMsg, history);
-      
-      let fullResponse = '';
-      setMessages(prev => [...prev, { role: 'model', text: '' }]);
-
-      for await (const chunk of stream) {
-        const text = chunk.text; // Correct way to get text from chunk
-        if (text) {
-          fullResponse += text;
-          setMessages(prev => {
-            const newHistory = [...prev];
-            newHistory[newHistory.length - 1].text = fullResponse;
-            return newHistory;
-          });
-        }
-      }
+      const reply = await sendMessage(userMsg, history);
+      setMessages(prev => [...prev, { role: 'model', text: reply }]);
     } catch (error) {
       setMessages(prev => [...prev, { role: 'model', text: 'Apologies, I encountered a structural error in my processing. Please try again.' }]);
     } finally {
