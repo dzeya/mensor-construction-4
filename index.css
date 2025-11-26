@@ -4,9 +4,22 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+}
+
 body {
   background-color: #050505;
   color: #E5E5E5;
+}
+
+.safe-area-top {
+  padding-top: calc(var(--safe-top) + 12px);
+}
+
+.safe-area-bottom {
+  padding-bottom: calc(var(--safe-bottom) + 12px);
 }
 
 .glass-panel {

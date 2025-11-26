@@ -59,12 +59,15 @@ const AIChatWidget = () => {
   };
 
   return (
-    <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end pointer-events-none">
+    <div 
+      className="fixed right-4 sm:right-6 z-50 flex flex-col items-end pointer-events-none"
+      style={{ bottom: 'calc(env(safe-area-inset-bottom, 0px) + 16px)' }}
+    >
       {/* Chat Window */}
       {isOpen && (
         <div 
           ref={chatRef}
-          className="pointer-events-auto mb-4 w-[350px] md:w-[400px] h-[500px] glass-panel rounded-2xl flex flex-col shadow-2xl overflow-hidden origin-bottom-right"
+          className="pointer-events-auto mb-4 w-[min(380px,calc(100vw-32px))] md:w-[400px] h-[70vh] max-h-[520px] glass-panel rounded-2xl flex flex-col shadow-2xl overflow-hidden origin-bottom-right"
         >
           {/* Header */}
           <div className="p-4 border-b border-mensor-accent/10 bg-mensor-gray/50 flex justify-between items-center">
@@ -125,7 +128,7 @@ const AIChatWidget = () => {
       {/* Toggle Button */}
       <button 
         onClick={() => setIsOpen(!isOpen)}
-        className="pointer-events-auto bg-mensor-accent hover:bg-white text-mensor-dark p-4 rounded-full shadow-[0_0_20px_rgba(227,62,43,0.3)] transition-all transform hover:scale-105 group"
+        className="pointer-events-auto bg-mensor-accent hover:bg-white text-mensor-dark p-3 sm:p-4 rounded-full shadow-[0_0_20px_rgba(227,62,43,0.3)] transition-all transform hover:scale-105 group"
       >
         <MessageSquare className={`w-6 h-6 transition-transform ${isOpen ? 'rotate-90 opacity-0 absolute' : 'opacity-100'}`} />
         <X className={`w-6 h-6 transition-transform absolute ${isOpen ? 'rotate-0 opacity-100' : '-rotate-90 opacity-0'}`} style={{top: '16px', left: '16px'}} />
