@@ -178,7 +178,7 @@ const SectionTitle = ({ title, subtitle }: { title: string, subtitle: string }) 
 
 const PingPongVideo = ({ src }: { src: string }) => {
   const videoRef = useRef<HTMLVideoElement | null>(null);
-  const directionRef = useRef<1 | -1>(1);
+  const [fadeOut, setFadeOut] = useState(false);
 
   useEffect(() => {
     const video = videoRef.current;
@@ -190,36 +190,23 @@ const PingPongVideo = ({ src }: { src: string }) => {
     video.loop = false;
     video.playbackRate = 1;
 
-    const handleCanPlay = () => ensurePlay();
+    const handleCanPlay = () => {
+      ensurePlay();
+    };
 
     const handleTimeUpdate = () => {
       if (!video.duration) return;
-
-      const nearEnd = video.duration - video.currentTime <= 0.25;
-      const nearStart = video.currentTime <= 0.15;
-
-      if (directionRef.current === 1 && nearEnd) {
-        directionRef.current = -1;
-        video.playbackRate = -1;
-        if (video.currentTime >= video.duration - 0.05) {
-          video.currentTime = video.duration - 0.2;
-        }
-        ensurePlay();
-      } else if (directionRef.current === -1 && nearStart) {
-        directionRef.current = 1;
-        video.playbackRate = 1;
-        if (video.currentTime <= 0.05) {
-          video.currentTime = 0.15;
-        }
-        ensurePlay();
-      }
+      const nearEnd = video.duration - video.currentTime <= 0.8;
+      setFadeOut(nearEnd);
     };
 
     const handleEnded = () => {
-      directionRef.current = -1;
-      video.playbackRate = -1;
-      video.currentTime = Math.max(video.duration - 0.2, 0);
-      ensurePlay();
+      setFadeOut(true);
+      video.currentTime = 0;
+      setTimeout(() => {
+        ensurePlay();
+        setFadeOut(false);
+      }, 250);
     };
 
     video.addEventListener('canplay', handleCanPlay);
@@ -246,8 +233,9 @@ const PingPongVideo = ({ src }: { src: string }) => {
         aria-label="Видео-презентация Mensor"
       />
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/35 via-transparent to-black/60"></div>
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-black via-black/40 to-transparent"></div>
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black via-black/40 to-transparent"></div>
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-16 bg-gradient-to-b from-black via-black/30 to-transparent"></div>
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-black via-black/30 to-transparent"></div>
+      <div className={`pointer-events-none absolute inset-0 bg-black transition-opacity duration-300 ${fadeOut ? 'opacity-70' : 'opacity-0'}`}></div>
     </div>
   );
 };
@@ -475,18 +463,9 @@ function App() {
       </section>
 
       {/* BLOCK 2.5: SHOWCASE VIDEO */}
-      <section className="relative bg-black py-14 md:py-20 border-y border-white/5 overflow-hidden">
+      <section className="relative bg-black py-8 md:py-12 border-y border-white/5 overflow-hidden">
         <div className="absolute inset-0 opacity-40 bg-[radial-gradient(circle_at_20%_20%,rgba(255,105,57,0.08),transparent_35%),radial-gradient(circle_at_80%_0%,rgba(255,255,255,0.06),transparent_30%)]"></div>
         <div className="container mx-auto px-4 sm:px-6 relative z-10">
-          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-10">
-            <div>
-              <p className="text-mensor-accent font-mono text-xs tracking-[0.28em] uppercase mb-2">Видео</p>
-              <h3 className="text-white text-2xl sm:text-3xl font-bold">Как мы убираем ошибки с площадки</h3>
-            </div>
-            <p className="text-mensor-light/70 text-sm sm:text-base max-w-2xl">
-              Короткий фрагмент из полевых работ: как команда MENSOR собирает данные и контролирует строительно-монтажные этапы. Видео проигрывается без звука и движется туда‑обратно бесконечно.
-            </p>
-          </div>
           <PingPongVideo src="https://www.dropbox.com/scl/fi/336au60s08mm318s18bcj/dbc8db1539a24228618e9ebc8fd9b8b3_1764250070.mp4?rlkey=m2jssbb0v23z6wna0ds6n8i4z&raw=1" />
         </div>
       </section>
