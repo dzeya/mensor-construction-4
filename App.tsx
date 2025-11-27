@@ -65,6 +65,13 @@ const Navbar = ({ onNavigate }: { onNavigate?: (hash?: string) => void }) => {
     return () => document.body.classList.remove('overflow-hidden');
   }, [isMobileMenuOpen]);
 
+  const handleLogoClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
+    if (!onNavigate) return;
+    event.preventDefault();
+    setIsMobileMenuOpen(false);
+    onNavigate();
+  };
+
   const handleNavClick = (event: React.MouseEvent<HTMLAnchorElement>, hash?: string) => {
     if (!onNavigate) return;
     event.preventDefault();
@@ -74,12 +81,16 @@ const Navbar = ({ onNavigate }: { onNavigate?: (hash?: string) => void }) => {
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-40 glass-panel border-t-0 border-l-0 border-r-0 border-b border-white/5 transition-all duration-300 safe-area-top">
-      <div className="flex items-center justify-between px-4 sm:px-8 py-4 md:py-5">
-        <div className="flex items-center gap-3 group cursor-pointer">
-          <div className="h-12 sm:h-14 transition-transform duration-300 hover:scale-105">
-            <MensorLogo className="h-full w-auto" />
+      <div className="flex items-center justify-between h-14 md:h-16 px-3 sm:px-5">
+        <a 
+          href="/" 
+          onClick={handleLogoClick}
+          className="flex items-center gap-3 group cursor-pointer"
+        >
+          <div className="h-8 md:h-9 transition-transform duration-300 hover:scale-105 overflow-hidden">
+            <MensorLogo className="h-full w-auto block" />
           </div>
-        </div>
+        </a>
 
         <div className="hidden md:flex gap-10 text-xs font-mono font-bold text-mensor-light tracking-widest">
           {navItems.map((item) => (
@@ -96,7 +107,7 @@ const Navbar = ({ onNavigate }: { onNavigate?: (hash?: string) => void }) => {
         </div>
 
         <div className="flex items-center gap-3">
-          <button className="hidden md:flex items-center gap-2 border border-mensor-accent/50 text-mensor-accent px-5 py-2 text-xs font-mono font-bold tracking-widest hover:bg-mensor-accent hover:text-white transition-all group">
+          <button className="hidden md:flex items-center gap-2 border border-mensor-accent/50 text-mensor-accent px-4 py-1.5 text-[11px] font-mono font-bold tracking-[0.22em] hover:bg-mensor-accent hover:text-white transition-all group">
             РАССЧИТАТЬ
             <ChevronRight size={14} className="group-hover:translate-x-1 transition-transform" />
           </button>
@@ -161,6 +172,82 @@ const SectionTitle = ({ title, subtitle }: { title: string, subtitle: string }) 
         <div className="w-12 h-[1px] bg-mensor-accent/50"></div>
       </div>
       <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white tracking-tight">{title}</h2>
+    </div>
+  );
+};
+
+const PingPongVideo = ({ src }: { src: string }) => {
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+  const directionRef = useRef<1 | -1>(1);
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    const ensurePlay = () => video.play().catch(() => {});
+
+    video.muted = true;
+    video.loop = false;
+    video.playbackRate = 1;
+
+    const handleCanPlay = () => ensurePlay();
+
+    const handleTimeUpdate = () => {
+      if (!video.duration) return;
+
+      const nearEnd = video.duration - video.currentTime <= 0.25;
+      const nearStart = video.currentTime <= 0.15;
+
+      if (directionRef.current === 1 && nearEnd) {
+        directionRef.current = -1;
+        video.playbackRate = -1;
+        if (video.currentTime >= video.duration - 0.05) {
+          video.currentTime = video.duration - 0.2;
+        }
+        ensurePlay();
+      } else if (directionRef.current === -1 && nearStart) {
+        directionRef.current = 1;
+        video.playbackRate = 1;
+        if (video.currentTime <= 0.05) {
+          video.currentTime = 0.15;
+        }
+        ensurePlay();
+      }
+    };
+
+    const handleEnded = () => {
+      directionRef.current = -1;
+      video.playbackRate = -1;
+      video.currentTime = Math.max(video.duration - 0.2, 0);
+      ensurePlay();
+    };
+
+    video.addEventListener('canplay', handleCanPlay);
+    video.addEventListener('timeupdate', handleTimeUpdate);
+    video.addEventListener('ended', handleEnded);
+
+    return () => {
+      video.removeEventListener('canplay', handleCanPlay);
+      video.removeEventListener('timeupdate', handleTimeUpdate);
+      video.removeEventListener('ended', handleEnded);
+    };
+  }, []);
+
+  return (
+    <div className="relative overflow-hidden rounded-3xl border border-white/5 bg-gradient-to-r from-white/5 via-white/10 to-white/5 shadow-[0_20px_80px_rgba(0,0,0,0.45)]">
+      <video
+        ref={videoRef}
+        src={src}
+        muted
+        autoPlay
+        playsInline
+        preload="auto"
+        className="w-full h-[260px] sm:h-[320px] md:h-[420px] lg:h-[500px] object-cover opacity-90"
+        aria-label="Видео-презентация Mensor"
+      />
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/35 via-transparent to-black/60"></div>
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-black via-black/40 to-transparent"></div>
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black via-black/40 to-transparent"></div>
     </div>
   );
 };
@@ -384,6 +471,23 @@ function App() {
               </div>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* BLOCK 2.5: SHOWCASE VIDEO */}
+      <section className="relative bg-black py-14 md:py-20 border-y border-white/5 overflow-hidden">
+        <div className="absolute inset-0 opacity-40 bg-[radial-gradient(circle_at_20%_20%,rgba(255,105,57,0.08),transparent_35%),radial-gradient(circle_at_80%_0%,rgba(255,255,255,0.06),transparent_30%)]"></div>
+        <div className="container mx-auto px-4 sm:px-6 relative z-10">
+          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-10">
+            <div>
+              <p className="text-mensor-accent font-mono text-xs tracking-[0.28em] uppercase mb-2">Видео</p>
+              <h3 className="text-white text-2xl sm:text-3xl font-bold">Как мы убираем ошибки с площадки</h3>
+            </div>
+            <p className="text-mensor-light/70 text-sm sm:text-base max-w-2xl">
+              Короткий фрагмент из полевых работ: как команда MENSOR собирает данные и контролирует строительно-монтажные этапы. Видео проигрывается без звука и движется туда‑обратно бесконечно.
+            </p>
+          </div>
+          <PingPongVideo src="https://www.dropbox.com/scl/fi/336au60s08mm318s18bcj/dbc8db1539a24228618e9ebc8fd9b8b3_1764250070.mp4?rlkey=m2jssbb0v23z6wna0ds6n8i4z&raw=1" />
         </div>
       </section>
 

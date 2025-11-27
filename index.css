@@ -15,7 +15,7 @@ body {
 }
 
 .safe-area-top {
-  padding-top: calc(var(--safe-top) + 12px);
+  padding-top: var(--safe-top);
 }
 
 .safe-area-bottom {
