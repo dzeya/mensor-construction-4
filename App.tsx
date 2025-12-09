@@ -279,15 +279,17 @@ const ServiceCard = ({ icon: Icon, title, points, delay }: { icon: any, title: s
           <li key={idx} className="flex items-start gap-3 text-sm text-mensor-light/80">
             <span className="w-1.5 h-1.5 bg-mensor-accent mt-1.5 rounded-full flex-shrink-0" />
             <span className="leading-relaxed">
-              {/* Bold the part before the colon if it exists */}
-              {point.includes(':') ? (
-                <>
-                  <strong className="text-white font-semibold">{point.split(':')[0]}:</strong>
-                  {point.split(':')[1]}
-                </>
-              ) : (
-                point
-              )}
+              {(() => {
+                const [label, ...rest] = point.split(':'); // keep scales like 1:10 intact
+                if (rest.length === 0) return point;
+                const content = rest.join(':');
+                return (
+                  <>
+                    <strong className="text-white font-semibold">{label}:</strong>
+                    {content}
+                  </>
+                );
+              })()}
             </span>
           </li>
         ))}
