@@ -399,11 +399,11 @@ function App() {
             <h1 className="hero-element text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white opacity-0 leading-[1.08] sm:leading-[1.05] mb-6">
               ГЕОДЕЗИЯ,<br />
               3D-СКАНИРОВАНИЕ<br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-mensor-accent to-white">И КОНТРОЛЬ СТРОИТЕЛЬСТВА</span>
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-mensor-accent to-white">И СОПРОВОЖДЕНИЕ СТРОИТЕЛЬСТВА</span>
             </h1>
 
             <p className="hero-element text-base sm:text-lg md:text-xl text-mensor-light/80 font-light mt-6 max-w-2xl opacity-0 leading-relaxed border-l-4 border-mensor-accent pl-5 sm:pl-6 mb-10">
-              Точность 1 мм. Ускоряем изыскания и исключаем ошибки в проекте. Экономим до 15% бюджета, избавляя вас от брака и переделок.
+              Точность 1 мм. Ускоряем изыскания и позволяем исключить ошибки в проекте. Экономим до 15% бюджета, избавляя вас от брака и переделок.
             </p>
 
             <div className="hero-element opacity-0 flex flex-col sm:flex-row gap-4 sm:gap-6 mb-12 w-full sm:w-auto">
@@ -417,9 +417,9 @@ function App() {
             </div>
 
             <div className="hero-element opacity-0 flex flex-wrap gap-x-6 gap-y-3 text-[11px] sm:text-xs font-mono text-mensor-light/60 uppercase tracking-wider">
-               <span className="flex items-center gap-2"><div className="w-1.5 h-1.5 bg-mensor-accent rounded-full"></div>Свое оборудование</span>
+               <span className="flex items-center gap-2"><div className="w-1.5 h-1.5 bg-mensor-accent rounded-full"></div>Инновационное оборудование</span>
                <span className="flex items-center gap-2"><div className="w-1.5 h-1.5 bg-mensor-accent rounded-full"></div>Данные для AutoCAD / Revit</span>
-               <span className="flex items-center gap-2"><div className="w-1.5 h-1.5 bg-mensor-accent rounded-full"></div>Работаем по всей Беларуси</span>
+               <span className="flex items-center gap-2"><div className="w-1.5 h-1.5 bg-mensor-accent rounded-full"></div>Работаем по всей Беларуси и за ее пределами</span>
             </div>
           </div>
         </div>
@@ -434,12 +434,12 @@ function App() {
               {
                 icon: Scan,
                 title: "Исключили человеческий фактор",
-                desc: "Автоматическое лазерное сканирование. Прибор не устает, не ошибается и видит всё."
+                desc: "Лазерное сканирование. Прибор не устает, не ошибается и видит всё."
               },
               {
                 icon: Zap,
                 title: "Результат быстрее",
-                desc: "Сокращаем время полевых работ. Вы получаете подоснову раньше и быстрее выходите на стройплощадку."
+                desc: "Вы получаете результат работ раньше и быстрее приступаете к проектированию или строительству."
               },
               {
                 icon: ShieldCheck,
@@ -449,7 +449,7 @@ function App() {
               {
                 icon: FileText,
                 title: "Документы для технадзора",
-                desc: "Сдаем исполнительную документацию строго по ГОСТ. У инспекторов не будет вопросов."
+                desc: "Сдаем исполнительную документацию согласно СНБ. У контролирующих органов не будет вопросов."
               }
             ].map((item, i) => (
               <div key={i} className="group p-6 bg-white/5 border border-white/5 hover:bg-white/10 transition-colors">
@@ -474,7 +474,7 @@ function App() {
       <section id="services" className="py-16 md:py-24 bg-black relative">
         <div className="container mx-auto px-4 sm:px-6">
           <SectionTitle title="КАТАЛОГ УСЛУГ" subtitle="КОМПЛЕКСНЫЕ РЕШЕНИЯ" />
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             <ServiceCard 
               icon={Construction} 
               title="Стройка и Контроль" 
@@ -483,7 +483,7 @@ function App() {
                 "Исполнительная съемка: Проверка факта, поиск отклонений.",
                 "Создание ГРО: Закладка пунктов геодезической основы.",
                 "Земляные работы: Точный расчет объемов.",
-                "Нивелировка путей: Проверка рельсов."
+                "Нивелировка путей: Наблюдение за осадками сооружений, проверка рельсов и другое."
               ]}
               delay={0}
             />
@@ -491,23 +491,31 @@ function App() {
               icon={Scan} 
               title="3D и Изыскания" 
               points={[
-                "3D Лазерное сканирование: Цифровые двойники зданий.",
-                "Топографическая съемка: Планы М 1:500, подоснова.",
-                "Фасадная съемка: Чертежи и 3D для реконструкции.",
-                "Обмерные работы: Для дизайнеров и БТИ.",
-                "Инженерная геология: Анализ грунтов.",
-                "Поиск коммуникаций: Находим кабели и трубы."
+                "3D Лазерное сканирование: Цифровые модели местности, зданий и сооружений.",
+                "Топографическая съемка: Планы М 1:10 – 1:2000.",
+                "Фасадная съемка: Цветовые карты отклонений, 3D модели, каркасные CAD-модели и исполнительные съемки.",
+                "Обмерные работы: 2D чертежи, эскизы, развертки, разрезы."
               ]}
               delay={200}
             />
             <ServiceCard 
               icon={Layers} 
-              title="Проектирование" 
+              title="Моделирование" 
               points={[
-                "Scan-to-BIM: Переводим облако точек в 3D (Revit).",
+                "Scan-to-BIM: Переводим облако точек в 3D (Revit, ArchiCAD, SketchUp), 3DGS (дополненная реальность).",
                 "ППГР: Проекты производства геодезических работ."
               ]}
               delay={400}
+            />
+            <ServiceCard 
+              icon={MapPin} 
+              title="Землеустройство" 
+              points={[
+                "Восстановление границ земельных участков.",
+                "Расчет фактических площадей землепользования.",
+                "Помощь при земельных спорах."
+              ]}
+              delay={600}
             />
           </div>
         </div>
@@ -525,9 +533,9 @@ function App() {
                 sub: "Сдаем объект без претензий",
                 icon: Building2,
                 items: [
-                  { b: "Экономия", t: "Контроль «нулевого цикла» и котлована бережет бетон." },
-                  { b: "Безопасность", t: "Регулярный мониторинг находит отклонения." },
-                  { b: "Результат", t: "Идеальная исполнительная документация." }
+                  { b: "Экономия", t: "Контроль объекта от нулевого цикла до сдачи в эксплуатацию." },
+                  { b: "Безопасность", t: "Регулярный оперативный мониторинг и выявление отклонений от проектной документации." },
+                  { b: "Результат", t: "Полная исполнительная документация в сжатые сроки." }
                 ]
               },
               { 
@@ -545,8 +553,8 @@ function App() {
                 sub: "Дизайн в реальный рельеф",
                 icon: TreeDeciduous, 
                 items: [
-                  { b: "Детализация", t: "Модель рельефа с шагом 10 см." },
-                  { b: "Учет всего", t: "Точная привязка деревьев и люков." },
+                  { b: "Детализация", t: "Модель рельефа с шагом от 1 см." },
+                  { b: "Учет всего", t: "Точная привязка деревьев, определение диаметров, объемов крон и других элементов рельефа или сооружений." },
                   { b: "Выгода", t: "Минус 30% времени на замеры." }
                 ]
               },
