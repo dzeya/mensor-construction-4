@@ -12,18 +12,14 @@ import {
   MapPin, 
   Zap, 
   ShieldCheck, 
-  Globe, 
   FileText, 
-  Cpu,
   Ruler,
   Plus,
   Minus,
   Construction,
-  Factory,
   Home,
   Building2,
   TreeDeciduous,
-  Target,
   Menu,
   X
 } from 'lucide-react';
@@ -320,7 +316,6 @@ const FAQItem = ({ question, answer }: { question: string, answer: string }) => 
 };
 
 function App() {
-  const heroTextRef = useRef(null);
   const [activeArticle, setActiveArticle] = useState<Article | null>(() => resolveArticleFromPath());
 
   const scrollToSection = (targetId?: string) => {
@@ -392,7 +387,7 @@ function App() {
       <section className="relative min-h-screen w-full flex items-center justify-center overflow-hidden pt-24 md:pt-32 pb-14">
         <ThreeHero />
         <div className="relative z-10 container mx-auto px-4 sm:px-8">
-          <div ref={heroTextRef} className="max-w-4xl md:max-w-5xl">
+          <div className="max-w-4xl md:max-w-5xl">
             <div className="flex items-center gap-4 mb-6 opacity-0 hero-element">
               <span className="text-mensor-accent font-mono text-xs tracking-[0.3em] font-bold">EST. 2011 &bull; MINSK</span>
               <div className="h-[1px] w-20 bg-mensor-accent"></div>
